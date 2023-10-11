@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "TetrisBlock.h"
+#include "InputActionTypes.h"
 #include "TetrisGameMode.generated.h"
 
 
@@ -68,6 +69,8 @@ private:
 	void UpdateBoard();
 
 	void CheckForLineFill();
+
+	void ProcessPlayerInput(EInputActionTypes InputType);
 
 private:
 	UPROPERTY(VisibleInstanceOnly)

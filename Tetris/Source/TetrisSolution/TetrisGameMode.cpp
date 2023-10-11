@@ -3,11 +3,21 @@
 
 #include "TetrisGameMode.h"
 
+#include "TetrisPlayer.h"
+
+#include "Kismet/GameplayStatics.h"
+
 void ATetrisGameMode::StartPlay()
 {
 	Super::StartPlay();
 
-
+	if (UWorld* World = GetWorld())
+	{
+		if (ATetrisPlayer* PlayerPawn = Cast<ATetrisPlayer>(UGameplayStatics::GetPlayerPawn(World, 0)))
+		{
+			PlayerPawn->OnGameInputRequested.BindUObject(this, &ATetrisGameMode::ProcessPlayerInput);
+		}
+	}
 
 	// init game data
 	/*FFallingBlock b;
@@ -93,4 +103,32 @@ void ATetrisGameMode::UpdateBoard()
 
 void ATetrisGameMode::CheckForLineFill()
 {
+}
+
+void ATetrisGameMode::ProcessPlayerInput(EInputActionTypes InputType)
+{
+	if (InputType == EInputActionTypes::MoveBlockLeft)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Move block left"));
+	}
+	else if (InputType == EInputActionTypes::MoveBlockRight)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Move block right"));
+	}
+	else if (InputType == EInputActionTypes::PlaceBlock)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Place block"));
+	}
+	else if (InputType == EInputActionTypes::RotateBlock)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Rotate block"));
+	}
+	else if (InputType == EInputActionTypes::RestartGame)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Restart game"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UNKNOWN INPUT ACTON REQUESTED"));
+	}
 }

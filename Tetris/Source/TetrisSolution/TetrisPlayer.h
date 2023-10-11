@@ -6,6 +6,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 
+// Project Includes
+#include "InputActionTypes.h"
+
 // This Include
 #include "TetrisPlayer.generated.h"
 
@@ -13,6 +16,9 @@
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+
+
+DECLARE_DELEGATE_OneParam(FOnGameInputRequested, EInputActionTypes);
 
 UCLASS()
 class TETRISSOLUTION_API ATetrisPlayer : public APawn
@@ -67,4 +73,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* RestartGame;
 
+public:
+	FOnGameInputRequested OnGameInputRequested;
 };

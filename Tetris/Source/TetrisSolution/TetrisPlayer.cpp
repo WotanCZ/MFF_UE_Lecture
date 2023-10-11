@@ -22,7 +22,7 @@ void ATetrisPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//Add Input Mapping Context
+	// Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -36,26 +36,23 @@ void ATetrisPlayer::MoveBlockAction(const FInputActionValue& Value)
 {
 	float MoveDir = Value.Get<float>();
 
-	UE_LOG(LogTemp, Warning, TEXT("%f"), MoveDir);
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::SanitizeFloat(MoveDir));
-	// call move
-		// -1 = Left, +1 = Right
-
+	// MoveDir: -1 = Left, +1 = Right
+	OnGameInputRequested.ExecuteIfBound(MoveDir > 0 ? EInputActionTypes::MoveBlockRight : EInputActionTypes::MoveBlockLeft);
 }
 
 void ATetrisPlayer::PlaceBlockAction(const FInputActionValue& Value)
 {
-	// call place	
+	OnGameInputRequested.ExecuteIfBound(EInputActionTypes::PlaceBlock);
 }
 
 void ATetrisPlayer::RotateBlockAction(const FInputActionValue& Value)
 {
-	// call rotate
+	OnGameInputRequested.ExecuteIfBound(EInputActionTypes::RotateBlock);
 }
 
 void ATetrisPlayer::RestartGameAction(const FInputActionValue& Value)
 {
-	// Call Restart
+	OnGameInputRequested.ExecuteIfBound(EInputActionTypes::RestartGame);
 }
 
 // Called every frame
