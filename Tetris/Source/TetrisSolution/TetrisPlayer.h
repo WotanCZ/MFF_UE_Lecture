@@ -37,13 +37,10 @@ protected:
 	void MoveBlockAction(const FInputActionValue& Value);
 
 	/** Called for looking input */
-	void PlaceBlockAction(const FInputActionValue& Value);
+	void MoveBlockDownAction(const FInputActionValue& Value);
 
 	/** Called for looking input */
 	void RotateBlockAction(const FInputActionValue& Value);
-
-	/** Called for looking input */
-	void RestartGameAction(const FInputActionValue& Value);
 
 public:	
 	// Called every frame
@@ -63,15 +60,11 @@ private:
 
 	/** Place block Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* PlaceBlock;
+	UInputAction* MoveBlockDown;
 
 	/** Rotate block Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* RotateBlock;
-
-	/** Restart game Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* RestartGame;
 
 public:
 	FOnGameInputRequested OnGameInputRequested;

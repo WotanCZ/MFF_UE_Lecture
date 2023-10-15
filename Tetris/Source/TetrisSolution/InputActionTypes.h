@@ -11,7 +11,6 @@ enum class TETRISSOLUTION_API EInputActionTypes : uint8
 {
 	MoveBlockLeft = 0,
 	MoveBlockRight,
-	PlaceBlock,
-	RotateBlock,
-	RestartGame
+	MoveBlockDown,
+	RotateBlock
 };

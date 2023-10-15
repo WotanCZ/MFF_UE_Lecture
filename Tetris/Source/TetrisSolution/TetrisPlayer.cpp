@@ -29,6 +29,8 @@ void ATetrisPlayer::BeginPlay()
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
+
+		PlayerController->SetInputMode(FInputModeGameOnly());
 	}
 }
 
@@ -40,19 +42,14 @@ void ATetrisPlayer::MoveBlockAction(const FInputActionValue& Value)
 	OnGameInputRequested.ExecuteIfBound(MoveDir > 0 ? EInputActionTypes::MoveBlockRight : EInputActionTypes::MoveBlockLeft);
 }
 
-void ATetrisPlayer::PlaceBlockAction(const FInputActionValue& Value)
+void ATetrisPlayer::MoveBlockDownAction(const FInputActionValue& Value)
 {
-	OnGameInputRequested.ExecuteIfBound(EInputActionTypes::PlaceBlock);
+	OnGameInputRequested.ExecuteIfBound(EInputActionTypes::MoveBlockDown);
 }
 
 void ATetrisPlayer::RotateBlockAction(const FInputActionValue& Value)
 {
 	OnGameInputRequested.ExecuteIfBound(EInputActionTypes::RotateBlock);
-}
-
-void ATetrisPlayer::RestartGameAction(const FInputActionValue& Value)
-{
-	OnGameInputRequested.ExecuteIfBound(EInputActionTypes::RestartGame);
 }
 
 // Called every frame
@@ -67,12 +64,9 @@ void ATetrisPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	UE_LOG(LogTemp, Warning, TEXT("What"));
-
 	ensureAlwaysMsgf(MoveBlock, TEXT("MoveBlock action is not assigned!"));
-	ensureAlwaysMsgf(PlaceBlock, TEXT("PlaceBlock action is not assigned!"));
+	ensureAlwaysMsgf(MoveBlockDown, TEXT("MoveBlockDown action is not assigned!"));
 	ensureAlwaysMsgf(RotateBlock, TEXT("RotateBlock action is not assigned!"));
-	ensureAlwaysMsgf(RestartGame, TEXT("RestartBlock action is not assigned!"));
 
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
@@ -81,13 +75,10 @@ void ATetrisPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		EnhancedInputComponent->BindAction(MoveBlock, ETriggerEvent::Triggered, this, &ATetrisPlayer::MoveBlockAction);
 
 		// Place block action
-		EnhancedInputComponent->BindAction(PlaceBlock, ETriggerEvent::Triggered, this, &ATetrisPlayer::PlaceBlockAction);
+		EnhancedInputComponent->BindAction(MoveBlockDown, ETriggerEvent::Triggered, this, &ATetrisPlayer::MoveBlockDownAction);
 
 		// Rotate block action
 		EnhancedInputComponent->BindAction(RotateBlock, ETriggerEvent::Triggered, this, &ATetrisPlayer::RotateBlockAction);
-
-		// restart game action
-		EnhancedInputComponent->BindAction(RestartGame, ETriggerEvent::Triggered, this, &ATetrisPlayer::RestartGameAction);
 	}
 }
 

@@ -39,16 +39,16 @@ void ATetrisBlock::SetBlockScale(const float NewScale)
 	MeshComponent->SetWorldScale3D(FVector(NewScale));
 }
 
-const FLinearColor& ATetrisBlock::GetBlockColor() const
+const FColor& ATetrisBlock::GetBlockColor() const
 {
 	return CurrentColor;
 }
 
-void ATetrisBlock::SetBlockColor(const FLinearColor& NewColor)
+void ATetrisBlock::SetBlockColor(const FColor& NewColor)
 {
 	CurrentColor = NewColor;
 
-	if (NewColor == FLinearColor::Black)
+	if (NewColor == FColor::Black)
 	{
 		this->SetActorHiddenInGame(true);
 	}

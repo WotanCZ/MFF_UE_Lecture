@@ -9,35 +9,23 @@
 #include "TetrisGameMode.generated.h"
 
 
-UENUM(Blueprintable)
-enum class EDirection : uint8
-{
-	Down = 0,
-	Left,
-	Right,
-	DirectionCount
+struct TETRISSOLUTION_API FFallingPiece
+{	
+	int32 PositionX = 0;
+	int32 PositionY = 0;
+	uint8 CurrentColor = 0;
+	uint8 CurrentRotation = 0;
 };
 
-
-UENUM(Blueprintable)
-enum class EBlockTypes : uint8
+struct TETRISSOLUTION_API FTetrisPiece
 {
-	Red = 0,
-	Green,
-	Blue,
-	Yellow,
-	Orange,
-	Cyan,
-	Purple,
-	BlockColorNum
-};
+	TArray<uint8> Matrix;
 
-struct FFallingBlock
-{
-	FIntPoint Positions[4];
-	bool bInitialized = false;
-	EBlockTypes BlockType = EBlockTypes::BlockColorNum;
-	FLinearColor BlockColor = FLinearColor::Black;
+	FTetrisPiece() {};
+	FTetrisPiece(TArray<uint8> InArray)
+	{
+		Matrix = InArray;
+	}
 };
 
 /**
@@ -57,24 +45,34 @@ public:
 	UFUNCTION()
 	void TetrisGameTick();
 
-	void MoveBlock(const EDirection Direction, const EBlockTypes BlockColor);
-
-	void RotateBlock(const EDirection Direction, const EBlockTypes BlockColor);
-
-	void PutBlockDown();
-
-	void MoveBlockCalled(float Dir);
+	//UFUNCTION()
+	//void LineClearTick();
 
 private:
 	void UpdateBoard();
 
 	void CheckForLineFill();
 
+	void PlacePiece();
+
+	bool SetupNewPiece();
+
+	void UpdateScore();
+
 	void ProcessPlayerInput(EInputActionTypes InputType);
+
+	FColor GetCurrentBlockColor(uint8 TetrisBlockType);
+
+	uint8 CanPlacePiece(int32 PieceX, int32 PieceY, uint8 PieceRotation);
+
+	uint8 GetIndexBasedOnRotation(uint8 px, uint8 py, uint8 CurrentRotation);
 
 private:
 	UPROPERTY(VisibleInstanceOnly)
 	FTimerHandle GameTickTimerHandle;
+
+	UPROPERTY(VisibleInstanceOnly)
+	FTimerHandle LineClearTimerHandle;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ATetrisBlock> BlockClassToSpawn;
@@ -82,21 +80,44 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<ATetrisBlock*> Board;
 
+	UPROPERTY(VisibleInstanceOnly)
+	TArray<uint8> InternalBoard;
+
+	UPROPERTY(VisibleInstanceOnly)
+	TArray<uint8> FilledLines;
+
 	UPROPERTY(EditAnywhere)
-	uint8 BoardWidth = 10;
+	uint8 BoardWidth = 12;
 
 	UPROPERTY(EditAnywhere)
 	uint8 BoardHeight = 20;
 
+	/** Ticks per second - 1s / 20 = 50ms */
 	UPROPERTY(EditAnywhere)
-	float TicksPerSecond = 2.f;
+	float TicksPerSecond = 20.f;
+
+	UPROPERTY(EditAnywhere)
+	uint8 MoveBlockDownTicks = 10;
+
+	UPROPERTY(VisibleInstanceOnly)
+	uint8 CurrentTick = 0;
 
 	UPROPERTY(VisibleInstanceOnly)
 	uint64 Score = 0;
 
+	UPROPERTY(VisibleInstanceOnly)
+	uint32 PlacedBlocks = 0;
+
+	bool bMoveLeft = false;
+	bool bMoveRight = false;
+	bool bMoveDown = false;
+	bool bRotate = false;
+
+	uint8 ClearedLines = 0;
+
 	
-	FFallingBlock CurrentBlock;
-	TArray<FFallingBlock> TetrisBlocks;
+	FFallingPiece FallingPiece;
+	TArray<FTetrisPiece> TetrisPieces;
 
 	
 	

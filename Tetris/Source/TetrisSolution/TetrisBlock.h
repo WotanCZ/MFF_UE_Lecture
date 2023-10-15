@@ -25,10 +25,10 @@ public:
 	void SetBlockScale(const float NewSize);
 
 	UFUNCTION(BlueprintCallable)
-	const FLinearColor& GetBlockColor() const;
+	const FColor& GetBlockColor() const;
 
 	UFUNCTION(BlueprintCallable)
-	void SetBlockColor(const FLinearColor& NewColor);
+	void SetBlockColor(const FColor& NewColor);
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -44,6 +44,6 @@ private:
 	UMaterialInstanceDynamic* MyDynamicMaterial;
 
 	UPROPERTY(EditAnywhere)
-	FLinearColor CurrentColor = FLinearColor::Gray;
+	FColor CurrentColor = FColor::Black;
 	
 };
