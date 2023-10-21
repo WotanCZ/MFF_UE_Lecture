@@ -42,10 +42,7 @@ protected:
 	/** Called for looking input */
 	void RotateBlockAction(const FInputActionValue& Value);
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -67,5 +64,6 @@ private:
 	UInputAction* RotateBlock;
 
 public:
+	/** Delegate to call on player's input events */
 	FOnGameInputRequested OnGameInputRequested;
 };

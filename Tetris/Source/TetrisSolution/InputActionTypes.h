@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 
 /**
- * 
+ * Different states that the player can interact with the game
  */
 enum class TETRISSOLUTION_API EInputActionTypes : uint8
 {
