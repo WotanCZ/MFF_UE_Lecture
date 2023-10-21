@@ -73,7 +73,7 @@ private:
 	uint8 CanPlacePiece(int32 PieceX, int32 PieceY, uint8 PieceRotation);
 
 	/** Returns piece's local index in the piece representation, with respect to the given rotation */
-	uint8 GetIndexBasedOnRotation(uint8 px, uint8 py, uint8 CurrentRotation);
+	uint8 GetIndexBasedOnRotation(uint8 PosX, uint8 PosY, uint8 CurrentRotation);
 
 private:
 	/** Handle to interact with the game tick timer */

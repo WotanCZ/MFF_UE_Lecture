@@ -210,7 +210,7 @@ void ATetrisGameMode::TetrisGameTick()
 			SetupNewPiece();
 
 			// Dont update the board here and exit this tick immediately
-			// therwise the new piece will be visualized in this tick even if technically
+			// otherwise the new piece will be visualized in this tick even if technically
 			// we just set it up in this tick
 			return;
 		}
@@ -241,19 +241,19 @@ void ATetrisGameMode::UpdateBoard()
 	}
 
 	// Update the falling piece
-	for (int32 px = 0; px < 4; ++px)
+	for (int32 PosX = 0; PosX < 4; ++PosX)
 	{
-		for (int32 py = 0; py < 4; ++py)
+		for (int32 PosY = 0; PosY < 4; ++PosY)
 		{
-			uint8 LocalPieceIndex = GetIndexBasedOnRotation(px, py, FallingPiece.CurrentRotation);
+			uint8 LocalPieceIndex = GetIndexBasedOnRotation(PosX, PosY, FallingPiece.CurrentRotation);
 
 			if (TetrisPieces[FallingPiece.CurrentColor - 2].Matrix[LocalPieceIndex] != 0)
 			{
 				// Current index is a part of the tetris piece
-				int32 BoardCoordsX = FallingPiece.PositionX + px;
-				int32 BoardCoordsY = FallingPiece.PositionY + py;
+				int32 BoardCoordsX = FallingPiece.PositionX + PosX;
+				int32 BoardCoordsY = FallingPiece.PositionY + PosY;
 
-				int32 BoardPieceIndex = BoardCoordsY * BoardWidth + BoardCoordsX;
+				int32 BoardIndex = BoardCoordsY * BoardWidth + BoardCoordsX;
 
 				// Check if it is within the board limits
 				if (BoardCoordsX > 0 ||
@@ -262,7 +262,7 @@ void ATetrisGameMode::UpdateBoard()
 					BoardCoordsY < BoardHeight - 1
 					)
 				{
-					Board[BoardPieceIndex]->SetBlockColor(DecodeBlockColor(FallingPiece.CurrentColor));
+					Board[BoardIndex]->SetBlockColor(DecodeBlockColor(FallingPiece.CurrentColor));
 				}
 			}
 		}
@@ -272,15 +272,15 @@ void ATetrisGameMode::UpdateBoard()
 void ATetrisGameMode::CheckForLineFill()
 {
 	// Scan the board bottom to top...
-	for (int32 py = 1; py < BoardHeight - 1; ++py)
+	for (int32 PosY = 1; PosY < BoardHeight - 1; ++PosY)
 	{
 		bool bLine = true;
 		
 		// ... from left to right, without border blocks ....
-		for (int32 px = 1; px < BoardWidth - 1; ++px)
+		for (int32 PosX = 1; PosX < BoardWidth - 1; ++PosX)
 		{
 			// ... and if there isn't block on the current position, immediately go for the line above
-			if (InternalBoard[py * BoardWidth + px] == 0)
+			if (InternalBoard[PosY * BoardWidth + PosX] == 0)
 			{
 				bLine = false;
 				break;
@@ -291,7 +291,7 @@ void ATetrisGameMode::CheckForLineFill()
 		if (bLine)
 		{
 			// ... so store the current height (Y line coordinate) where the board is full
-			FilledLines.Push(py);
+			FilledLines.Push(PosY);
 		}
 	}
 
@@ -304,13 +304,13 @@ void ATetrisGameMode::CheckForLineFill()
 			uint8 LineY = FilledLines[i];
 
 			// Now start on the x axis, ...
-			for (int32 px = 1; px < BoardWidth - 1; ++px)
+			for (int32 PosX = 1; PosX < BoardWidth - 1; ++PosX)
 			{
 				// ... iterate up ...
-				for (int32 py = LineY; py < BoardHeight - 1; ++py)
+				for (int32 PosY = LineY; PosY < BoardHeight - 1; ++PosY)
 				{
 					// ... and move each block down
-					InternalBoard[py * BoardWidth + px] = InternalBoard[(py + 1) * BoardWidth + px];
+					InternalBoard[PosY * BoardWidth + PosX] = InternalBoard[(PosY + 1) * BoardWidth + PosX];
 				}
 			}
 
@@ -334,19 +334,19 @@ void ATetrisGameMode::CheckForLineFill()
 void ATetrisGameMode::PlacePiece()
 {
 	// For each piece coordinate try to place it into the internal board
-	for (int32 px = 0; px < 4; ++px)
+	for (int32 PosX = 0; PosX < 4; ++PosX)
 	{
-		for (int32 py = 0; py < 4; ++py)
+		for (int32 PosY = 0; PosY < 4; ++PosY)
 		{
-			uint8 LocalPieceIndex = GetIndexBasedOnRotation(px, py, FallingPiece.CurrentRotation);
+			uint8 LocalPieceIndex = GetIndexBasedOnRotation(PosX, PosY, FallingPiece.CurrentRotation);
 
 			if (TetrisPieces[FallingPiece.CurrentColor - 2].Matrix[LocalPieceIndex] != 0)
 			{
 				// Current index is a part of the tetris piece
-				int32 BoardCoordsX = FallingPiece.PositionX + px;
-				int32 BoardCoordsY = FallingPiece.PositionY + py;
+				int32 BoardCoordsX = FallingPiece.PositionX + PosX;
+				int32 BoardCoordsY = FallingPiece.PositionY + PosY;
 
-				int32 BoardPieceIndex = BoardCoordsY * BoardWidth + BoardCoordsX;
+				int32 BoardIndex = BoardCoordsY * BoardWidth + BoardCoordsX;
 
 				// Check if it is within the board limits
 				if (BoardCoordsX > 0 ||
@@ -355,7 +355,7 @@ void ATetrisGameMode::PlacePiece()
 					BoardCoordsY < BoardHeight - 1
 					)
 				{
-					InternalBoard[BoardPieceIndex] = FallingPiece.CurrentColor;
+					InternalBoard[BoardIndex] = FallingPiece.CurrentColor;
 				}
 			}
 		}
@@ -449,17 +449,17 @@ uint8 ATetrisGameMode::CanPlacePiece(int32 PieceX, int32 PieceY, uint8 PieceRota
 {
 	// For each block in the piece matrix try to find out of it is within board bounds
 	// We return 1 even if a part of the piece's matrix does not fit the board!
-	// This is OK as long as we care abount the occupied block pieces and not empty spaces in the matrix
-	for (int32 px = 0; px < 4; ++px)
+	// This is OK as long as we care about the occupied block pieces and not empty spaces in the matrix
+	for (int32 PosX = 0; PosX < 4; ++PosX)
 	{
-		for (int32 py = 0; py < 4; ++py)
+		for (int32 PosY = 0; PosY < 4; ++PosY)
 		{
-			uint8 LocalPieceIndex = GetIndexBasedOnRotation(px,py, PieceRotation);
+			uint8 LocalPieceIndex = GetIndexBasedOnRotation(PosX,PosY, PieceRotation);
 
-			int32 BoardCoordsX = PieceX + px;
-			int32 BoardCoordsY = PieceY + py;
+			int32 BoardCoordsX = PieceX + PosX;
+			int32 BoardCoordsY = PieceY + PosY;
 
-			int32 BoardPieceIndex = BoardCoordsY * BoardWidth + BoardCoordsX;
+			int32 BoardIndex = BoardCoordsY * BoardWidth + BoardCoordsX;
 
 			// Check if we are within bounds
 			if (BoardCoordsX > 0 ||
@@ -471,7 +471,7 @@ uint8 ATetrisGameMode::CanPlacePiece(int32 PieceX, int32 PieceY, uint8 PieceRota
 				// We are within board bounds for this piece's block
 				// Now check if the tested piece block is occupied and the board is occupied
 				// if yes, then the Falling Piece cannot be placed at this location
-				if (TetrisPieces[FallingPiece.CurrentColor - 2].Matrix[LocalPieceIndex] != 0 && InternalBoard[BoardPieceIndex] != 0)
+				if (TetrisPieces[FallingPiece.CurrentColor - 2].Matrix[LocalPieceIndex] != 0 && InternalBoard[BoardIndex] != 0)
 				{
 					return 0;
 				}
@@ -481,16 +481,16 @@ uint8 ATetrisGameMode::CanPlacePiece(int32 PieceX, int32 PieceY, uint8 PieceRota
 	return 1;
 }
 
-uint8 ATetrisGameMode::GetIndexBasedOnRotation(uint8 px, uint8 py, uint8 CurrentRotation)
+uint8 ATetrisGameMode::GetIndexBasedOnRotation(uint8 PosX, uint8 PosY, uint8 CurrentRotation)
 {
 	uint8 LocalIndex = 0;
 
 	switch (CurrentRotation)
 	{
-	case 0: LocalIndex = py * 4 + px; break;
-	case 1: LocalIndex = 12 + py - (px * 4); break;
-	case 2: LocalIndex = 15 - (py * 4) - px; break;
-	case 3: LocalIndex = 3 - py + (px * 4); break;
+	case 0: LocalIndex = PosY * 4 + PosX; break;
+	case 1: LocalIndex = 12 + PosY - (PosX * 4); break;
+	case 2: LocalIndex = 15 - (PosY * 4) - PosX; break;
+	case 3: LocalIndex = 3 - PosY + (PosX * 4); break;
 	}
 
 	return LocalIndex;
