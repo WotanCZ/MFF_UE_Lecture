@@ -38,13 +38,23 @@ void ATetrisPlayer::MoveBlockAction(const FInputActionValue& Value)
 {
 	float MoveDir = Value.Get<float>();
 
+	EInputActionTypes Direction = EInputActionTypes::Undefined;
+	if (MoveDir < 0.f)
+	{
+		Direction = EInputActionTypes::MoveBlockLeft;
+	}
+	else if (MoveDir > 0.f)
+	{
+		Direction = EInputActionTypes::MoveBlockRight;
+	}
+
 	// MoveDir: -1 = Left, +1 = Right
-	OnGameInputRequested.ExecuteIfBound(MoveDir > 0 ? EInputActionTypes::MoveBlockRight : EInputActionTypes::MoveBlockLeft);
+	OnGameInputRequested.ExecuteIfBound(Direction);
 }
 
 void ATetrisPlayer::MoveBlockDownAction(const FInputActionValue& Value)
 {
-	OnGameInputRequested.ExecuteIfBound(EInputActionTypes::MoveBlockDown);
+	OnGameInputRequested.ExecuteIfBound(Value.Get<bool>() ? EInputActionTypes::MoveBlockDown : EInputActionTypes::Undefined);
 }
 
 void ATetrisPlayer::RotateBlockAction(const FInputActionValue& Value)
@@ -74,11 +84,11 @@ void ATetrisPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		// Move block action
 		EnhancedInputComponent->BindAction(MoveBlock, ETriggerEvent::Triggered, this, &ATetrisPlayer::MoveBlockAction);
 
-		// Place block action
+		// Place block action - detect press and hold
 		EnhancedInputComponent->BindAction(MoveBlockDown, ETriggerEvent::Triggered, this, &ATetrisPlayer::MoveBlockDownAction);
+		EnhancedInputComponent->BindAction(MoveBlockDown, ETriggerEvent::Completed, this, &ATetrisPlayer::MoveBlockDownAction);
 
 		// Rotate block action
 		EnhancedInputComponent->BindAction(RotateBlock, ETriggerEvent::Triggered, this, &ATetrisPlayer::RotateBlockAction);
 	}
 }
-

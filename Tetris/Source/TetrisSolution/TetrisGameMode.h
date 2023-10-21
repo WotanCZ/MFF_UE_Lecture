@@ -108,17 +108,14 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	uint32 PlacedBlocks = 0;
 
-	bool bMoveLeft = false;
-	bool bMoveRight = false;
-	bool bMoveDown = false;
-	bool bRotate = false;
+	uint8 bMoveLeft : 1;
+	uint8 bMoveRight : 1;
+	uint8 bMoveDown : 1;
+	uint8 bRotate : 1;
 
 	uint8 ClearedLines = 0;
 
 	
 	FFallingPiece FallingPiece;
-	TArray<FTetrisPiece> TetrisPieces;
-
-	
-	
+	TArray<FTetrisPiece> TetrisPieces;	
 };

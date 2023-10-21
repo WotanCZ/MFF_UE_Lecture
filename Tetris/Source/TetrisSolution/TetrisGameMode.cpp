@@ -105,6 +105,11 @@ void ATetrisGameMode::StartPlay()
 		));
 	}
 
+	bMoveDown = false;
+	bMoveRight = false;
+	bMoveLeft = false;
+	bRotate = false;
+
 	// init game from the begining
 	RestartGame();
 }
@@ -167,7 +172,6 @@ void ATetrisGameMode::TetrisGameTick()
 	if (bMoveDown)
 	{
 		FallingPiece.PositionY -= CanPlacePiece(FallingPiece.PositionX, FallingPiece.PositionY - 1, FallingPiece.CurrentRotation);
-		bMoveDown = false;
 	}
 	if (bRotate)
 	{
@@ -413,7 +417,9 @@ void ATetrisGameMode::ProcessPlayerInput(EInputActionTypes InputType)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("UNKNOWN INPUT ACTON REQUESTED"));
+		bMoveLeft = false;
+		bMoveRight = false;
+		bMoveDown = false;
 	}
 }
 
