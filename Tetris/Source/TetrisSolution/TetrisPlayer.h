@@ -33,13 +33,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	/** Called for movement input */
+	/** Called for falling piece movement left or right */
 	void MoveBlockAction(const FInputActionValue& Value);
 
-	/** Called for looking input */
+	/** Called for moving down the falling piece */
 	void MoveBlockDownAction(const FInputActionValue& Value);
 
-	/** Called for looking input */
+	/** Called for rotating the falling piece */
 	void RotateBlockAction(const FInputActionValue& Value);
 
 public:

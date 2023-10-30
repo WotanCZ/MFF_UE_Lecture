@@ -35,29 +35,24 @@ void ATetrisPlayer::BeginPlay()
 
 void ATetrisPlayer::MoveBlockAction(const FInputActionValue& Value)
 {
-	float MoveDir = Value.Get<float>();
-
-	EInputActionTypes Direction = EInputActionTypes::Undefined;
-	if (MoveDir < 0.f)
-	{
-		Direction = EInputActionTypes::MoveBlockLeft;
-	}
-	else if (MoveDir > 0.f)
-	{
-		Direction = EInputActionTypes::MoveBlockRight;
-	}
-
+	// Event Triggered - Value has to be either -1.f or 1.f
 	// MoveDir: -1 = Left, +1 = Right
-	OnGameInputRequested.ExecuteIfBound(Direction);
+	float MoveDir = Value.Get<float>();
+	
+	OnGameInputRequested.ExecuteIfBound(MoveDir < 0.f ? EInputActionTypes::MoveBlockLeft : EInputActionTypes::MoveBlockRight);
 }
 
 void ATetrisPlayer::MoveBlockDownAction(const FInputActionValue& Value)
 {
-	OnGameInputRequested.ExecuteIfBound(Value.Get<bool>() ? EInputActionTypes::MoveBlockDown : EInputActionTypes::Undefined);
+	// Value is True when the button is pressed, False otherwise
+	bool bIsButtonPressed = Value.Get<bool>();
+
+	OnGameInputRequested.ExecuteIfBound(bIsButtonPressed ? EInputActionTypes::MoveBlockDown : EInputActionTypes::Undefined);
 }
 
 void ATetrisPlayer::RotateBlockAction(const FInputActionValue& Value)
 {
+	// One shot action
 	OnGameInputRequested.ExecuteIfBound(EInputActionTypes::RotateBlock);
 }
 
@@ -66,9 +61,11 @@ void ATetrisPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	ensureAlwaysMsgf(MoveBlock, TEXT("MoveBlock action is not assigned!"));
-	ensureAlwaysMsgf(MoveBlockDown, TEXT("MoveBlockDown action is not assigned!"));
-	ensureAlwaysMsgf(RotateBlock, TEXT("RotateBlock action is not assigned!"));
+	// Make checks that the input actions are set up
+	// check = assert: stops exectution
+	check(MoveBlock, TEXT("MoveBlock action is not assigned!"));
+	check(MoveBlockDown, TEXT("MoveBlockDown action is not assigned!"));
+	check(RotateBlock, TEXT("RotateBlock action is not assigned!"));
 
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
