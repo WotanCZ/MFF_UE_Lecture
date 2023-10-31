@@ -63,9 +63,9 @@ void ATetrisPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	// Make checks that the input actions are set up
 	// check = assert: stops exectution
-	check(MoveBlock, TEXT("MoveBlock action is not assigned!"));
-	check(MoveBlockDown, TEXT("MoveBlockDown action is not assigned!"));
-	check(RotateBlock, TEXT("RotateBlock action is not assigned!"));
+	check(MoveBlock);
+	check(MoveBlockDown);
+	check(RotateBlock);
 
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
