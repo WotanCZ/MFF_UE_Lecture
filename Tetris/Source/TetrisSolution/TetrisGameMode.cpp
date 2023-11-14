@@ -4,12 +4,13 @@
 #include "TetrisGameMode.h"
 
 #include "TetrisPlayer.h"
+#include "TetrisBlock.h"
 
 #include "Kismet/GameplayStatics.h"
 
-void ATetrisGameMode::StartPlay()
+void ATetrisGameMode::BeginPlay()
 {
-	Super::StartPlay();
+	Super::BeginPlay();
 
 	// Bind to the input delegate
 	if (UWorld* World = GetWorld())
@@ -22,89 +23,76 @@ void ATetrisGameMode::StartPlay()
 	
 	// Initialize Tetris piece types
 	{
-		// Straight
-		TetrisPieces.Push(
-			FTetrisPiece(
-				TArray<uint8>
-			{				
-				0, 0, 0, 0,
-				2, 2, 2, 2,
-				0, 0, 0, 0,
-				0, 0, 0, 0,
-			}
-		));
-
-		// Block	
-		TetrisPieces.Push(
-			FTetrisPiece(
-				TArray<uint8>
+		// I
+		FTetrisPiece Piece;
+		Piece.Matrix = TArray<uint8>
 		{
-				0, 0, 0, 0,
-				0, 3, 3, 0,
-				0, 3, 3, 0,
-				0, 0, 0, 0,
-		}
-		));
+			0, 0, 0, 0,
+			2, 2, 2, 2,
+			0, 0, 0, 0,
+			0, 0, 0, 0,
+		};
+		TetrisPieces.Push(Piece);
 
-		// T	
-		TetrisPieces.Push(
-			FTetrisPiece(
-				TArray<uint8>
-		{				
-				0, 0, 0, 0,
-				4, 4, 4, 0,
-				0, 4, 0, 0,
-				0, 0, 0, 0,
-		}
-		));
-
-		// J	
-		TetrisPieces.Push(
-			FTetrisPiece(
-				TArray<uint8>
+		// O
+		Piece.Matrix = TArray<uint8>
 		{
-				0, 0, 5, 0,
-				0, 0, 5, 0,
-				0, 5, 5, 0,
-				0, 0, 0, 0,
-		}
-		));
+			0, 0, 0, 0,
+			0, 3, 3, 0,
+			0, 3, 3, 0,
+			0, 0, 0, 0,
+		};
+		TetrisPieces.Push(Piece);
 
-		// L	
-		TetrisPieces.Push(
-			FTetrisPiece(
-				TArray<uint8>
+		// T
+		Piece.Matrix = TArray<uint8>
+		{
+			0, 0, 0, 0,
+			4, 4, 4, 0,
+			0, 4, 0, 0,
+			0, 0, 0, 0,
+		};
+		TetrisPieces.Push(Piece);
+
+		// J
+		Piece.Matrix = TArray<uint8>
+		{
+			0, 0, 5, 0,
+			0, 0, 5, 0,
+			0, 5, 5, 0,
+			0, 0, 0, 0,
+		};
+		TetrisPieces.Push(Piece);
+
+		// L
+		Piece.Matrix = TArray<uint8>
 		{
 			0, 6, 0, 0,
 			0, 6, 0, 0,
 			0, 6, 6, 0,
 			0, 0, 0, 0,
-		}
-		));
+		};
+		TetrisPieces.Push(Piece);
 
-		// S	
-		TetrisPieces.Push(
-			FTetrisPiece(
-				TArray<uint8>
+		// S
+		Piece.Matrix = TArray<uint8>
 		{
 			0, 0, 0, 0,
 			0, 7, 7, 0,
 			7, 7, 0, 0,
 			0, 0, 0, 0,
-		}
-		));
+		};
+		TetrisPieces.Push(Piece);
 
-		// Z	
-		TetrisPieces.Push(
-			FTetrisPiece(
-				TArray<uint8>
+		// Z
+		Piece.Matrix = TArray<uint8>
 		{
 			0, 0, 0, 0,
 			8, 8, 0, 0,
 			0, 8, 8, 0,
 			0, 0, 0, 0,
-		}
-		));
+		};
+		TetrisPieces.Push(Piece);
 	}
 
 	// Clear current player's input
@@ -114,10 +102,10 @@ void ATetrisGameMode::StartPlay()
 	bRotate = false;
 
 	// Init a new game
-	RestartGame();
+	InitNewGame();
 }
 
-void ATetrisGameMode::RestartGame()
+void ATetrisGameMode::InitNewGame()
 {
 	// Init board and spawn actors representing "display"
 	Board.Init(nullptr, BoardWidth * BoardHeight);
@@ -127,10 +115,13 @@ void ATetrisGameMode::RestartGame()
 
 	if (UWorld* World = GetWorld())
 	{
+		// We're about to spawn an actor, so perform a sanity check (if assigned from the Editor)
+		check(BlockClassToSpawn);
+
 		// Spawn the board
-		for (uint8 x = 0; x < BoardWidth; ++x)
+		for (uint8 y = 0; y < BoardHeight; ++y)
 		{
-			for (uint8 y = 0; y < BoardHeight; ++y)
+			for (uint8 x = 0; x < BoardWidth; ++x)
 			{
 				uint8 CurrentIdx = y * BoardWidth + x;
 
@@ -146,6 +137,7 @@ void ATetrisGameMode::RestartGame()
 		}
 
 		// Spawn the floor
+		// Watch out! Whis way you will lose access to the floor actor!
 		ATetrisBlock* Floor = World->SpawnActor<ATetrisBlock>(BlockClassToSpawn, FVector(450, 0, -BlockSize), FRotator::ZeroRotator);
 		Floor->SetActorScale3D(FVector(50, 50, 1));
 		Floor->SetBlockColor(FColor::White);
@@ -223,9 +215,9 @@ void ATetrisGameMode::TetrisGameTick()
 void ATetrisGameMode::UpdateBoard()
 {
 	// Update the board state
-	for (uint8 x = 0; x < BoardWidth; ++x)
+	for (uint8 y = 0; y < BoardHeight; ++y)
 	{
-		for (uint8 y = 0; y < BoardHeight; ++y)
+		for (uint8 x = 0; x < BoardWidth; ++x)
 		{
 			uint8 CurrentIdx = y * BoardWidth + x;
 			
@@ -241,9 +233,9 @@ void ATetrisGameMode::UpdateBoard()
 	}
 
 	// Update the falling piece
-	for (int32 PosX = 0; PosX < 4; ++PosX)
+	for (int32 PosY = 0; PosY < 4; ++PosY)
 	{
-		for (int32 PosY = 0; PosY < 4; ++PosY)
+		for (int32 PosX = 0; PosX < 4; ++PosX)
 		{
 			uint8 LocalPieceIndex = GetIndexBasedOnRotation(PosX, PosY, FallingPiece.CurrentRotation);
 
@@ -325,18 +317,15 @@ void ATetrisGameMode::CheckForLineFill()
 				}
 			}
 		}
-
-		// And clean up, the board is now updated
-		FilledLines.Empty();
 	}		
 }
 
 void ATetrisGameMode::PlacePiece()
 {
 	// For each piece coordinate try to place it into the internal board
-	for (int32 PosX = 0; PosX < 4; ++PosX)
+	for (int32 PosY = 0; PosY < 4; ++PosY)
 	{
-		for (int32 PosY = 0; PosY < 4; ++PosY)
+		for (int32 PosX = 0; PosX < 4; ++PosX)
 		{
 			uint8 LocalPieceIndex = GetIndexBasedOnRotation(PosX, PosY, FallingPiece.CurrentRotation);
 
@@ -388,6 +377,9 @@ void ATetrisGameMode::UpdateScore()
 	{
 		// Just a random computation
 		Score += (FilledLines.Num() * 2) * 100;
+
+		// Clean up filled lines, the board was updated already
+		FilledLines.Empty();
 	}
 
 	if (PlacedBlocks % 15 == 0)
@@ -450,11 +442,11 @@ uint8 ATetrisGameMode::CanPlacePiece(int32 PieceX, int32 PieceY, uint8 PieceRota
 	// For each block in the piece matrix try to find out of it is within board bounds
 	// We return 1 even if a part of the piece's matrix does not fit the board!
 	// This is OK as long as we care about the occupied block pieces and not empty spaces in the matrix
-	for (int32 PosX = 0; PosX < 4; ++PosX)
+	for (int32 PosY = 0; PosY < 4; ++PosY)
 	{
-		for (int32 PosY = 0; PosY < 4; ++PosY)
+		for (int32 PosX = 0; PosX < 4; ++PosX)
 		{
-			uint8 LocalPieceIndex = GetIndexBasedOnRotation(PosX,PosY, PieceRotation);
+			uint8 LocalPieceIndex = GetIndexBasedOnRotation(PosX, PosY, PieceRotation);
 
 			int32 BoardCoordsX = PieceX + PosX;
 			int32 BoardCoordsY = PieceY + PosY;

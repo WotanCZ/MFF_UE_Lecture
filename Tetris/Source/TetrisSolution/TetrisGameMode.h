@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "TetrisBlock.h"
+
 #include "InputActionTypes.h"
 #include "TetrisGameMode.generated.h"
+
+class ATetrisBlock;
 
 
 struct TETRISSOLUTION_API FFallingPiece
@@ -19,12 +21,6 @@ struct TETRISSOLUTION_API FFallingPiece
 
 struct TETRISSOLUTION_API FTetrisPiece
 {
-	FTetrisPiece() {};
-	FTetrisPiece(TArray<uint8> InArray)
-	{
-		Matrix = InArray;
-	}
-
 	TArray<uint8> Matrix;	
 };
 
@@ -37,11 +33,11 @@ class TETRISSOLUTION_API ATetrisGameMode : public AGameModeBase
 	GENERATED_BODY()
 	
 public:
-	virtual void StartPlay() override;
+	virtual void BeginPlay() override;
 
 	/** Initialize the game */
 	UFUNCTION(BlueprintCallable)
-	void RestartGame();
+	void InitNewGame();
 
 	/** Timer callback function, Tetris game tick */
 	UFUNCTION()
@@ -104,7 +100,7 @@ private:
 
 	/** Ticks per second: 1s / 20 = 50ms */
 	UPROPERTY(EditAnywhere)
-	float TicksPerSecond = 20.f;
+	int32 TicksPerSecond = 20;
 
 	/** Move the falling piece down each X ticks */
 	UPROPERTY(EditAnywhere)
