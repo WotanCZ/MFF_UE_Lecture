@@ -18,11 +18,37 @@ ATetrisBlock::ATetrisBlock()
 	RootComponent = MeshComponent;
 }
 
+const FColor& ATetrisBlock::GetBlockColor() const
+{
+	return BlockColor;
+}
+
+void ATetrisBlock::SetBlockColor(const FColor NewColor)
+{
+	BlockColor = NewColor;
+
+	if (BlockColor == FColor::Black)
+	{
+		this->SetActorHiddenInGame(true);
+	}
+	else
+	{
+		DynamicBlockMaterialInstance->SetVectorParameterValue(ColorParameterName, BlockColor);
+		this->SetActorHiddenInGame(false);
+	}
+}
+
 // Called when the game starts or when spawned
 void ATetrisBlock::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (IsValid(BlockMaterialInstance))
+	{
+		DynamicBlockMaterialInstance = UMaterialInstanceDynamic::Create(BlockMaterialInstance, this);
+		MeshComponent->SetMaterial(0, DynamicBlockMaterialInstance);
+		SetBlockColor(FColor::Blue);
+	}	
 }
 
 // Called every frame

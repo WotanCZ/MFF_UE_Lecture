@@ -15,6 +15,9 @@ public:
 	// Sets default values for this actor's properties
 	ATetrisBlock();
 
+	const FColor& GetBlockColor() const;
+	void SetBlockColor(const FColor NewColor);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
