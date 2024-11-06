@@ -120,7 +120,7 @@ private:
 
 	uint8 bMoveLeft : 1;
 	uint8 bMoveRight : 1;
-	uint8 bMoveDown : 1;
+	uint8 bPlace : 1;
 	uint8 bRotate : 1;
 
 	/** Data representation of the falling piece */

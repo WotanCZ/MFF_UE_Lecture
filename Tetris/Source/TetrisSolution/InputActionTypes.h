@@ -7,11 +7,11 @@
 /**
  * Different states that the player can interact with the game
  */
-enum class TETRISSOLUTION_API EInputActionTypes : uint8
+enum class EInputActionTypes : uint8
 {
 	MoveBlockLeft = 0,
 	MoveBlockRight,
-	MoveBlockDown,
+	PlaceBlock,
 	RotateBlock,
 	Undefined
 };

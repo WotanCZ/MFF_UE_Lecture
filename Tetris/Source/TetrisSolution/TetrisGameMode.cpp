@@ -96,7 +96,7 @@ void ATetrisGameMode::BeginPlay()
 	}
 
 	// Clear current player's input
-	bMoveDown = false;
+	bPlace = false;
 	bMoveRight = false;
 	bMoveLeft = false;
 	bRotate = false;
@@ -123,7 +123,7 @@ void ATetrisGameMode::InitNewGame()
 		{
 			for (uint8 x = 0; x < BoardWidth; ++x)
 			{
-				uint8 CurrentIdx = y * BoardWidth + x;
+				int32 CurrentIdx = y * BoardWidth + x;
 
 				FVector Location = FVector(x * BlockSize, 0, y * BlockSize);
 				
@@ -166,7 +166,7 @@ void ATetrisGameMode::TetrisGameTick()
 		FallingPiece.PositionX += CanPlacePiece(FallingPiece.PositionX + 1, FallingPiece.PositionY, FallingPiece.CurrentRotation);
 		bMoveRight = false;
 	}
-	if (bMoveDown)
+	if (bPlace)
 	{
 		FallingPiece.PositionY -= CanPlacePiece(FallingPiece.PositionX, FallingPiece.PositionY - 1, FallingPiece.CurrentRotation);
 	}
@@ -219,7 +219,7 @@ void ATetrisGameMode::UpdateBoard()
 	{
 		for (uint8 x = 0; x < BoardWidth; ++x)
 		{
-			uint8 CurrentIdx = y * BoardWidth + x;
+			int32 CurrentIdx = y * BoardWidth + x;
 			
 			ATetrisBlock* BoardBlock = Board[CurrentIdx];
 			FColor BoardBlockColor = BoardBlock->GetBlockColor();
@@ -402,8 +402,8 @@ void ATetrisGameMode::ProcessPlayerInput(EInputActionTypes InputType)
 		bMoveRight = true;
 		break;
 
-	case EInputActionTypes::MoveBlockDown:
-		bMoveDown = true;
+	case EInputActionTypes::PlaceBlock:
+		bPlace = true;
 		break;
 
 	case EInputActionTypes::RotateBlock:
@@ -413,7 +413,7 @@ void ATetrisGameMode::ProcessPlayerInput(EInputActionTypes InputType)
 	default: // EInputActionTypes::Undefined
 		bMoveLeft = false;
 		bMoveRight = false;
-		bMoveDown = false;
+		bPlace = false;
 	}
 }
 

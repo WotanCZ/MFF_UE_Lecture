@@ -37,7 +37,7 @@ protected:
 	void MoveBlockAction(const FInputActionValue& Value);
 
 	/** Called for moving down the falling piece */
-	void MoveBlockDownAction(const FInputActionValue& Value);
+	void PlaceBlockAction(const FInputActionValue& Value);
 
 	/** Called for rotating the falling piece */
 	void RotateBlockAction(const FInputActionValue& Value);
@@ -57,7 +57,7 @@ private:
 
 	/** Place block Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* MoveBlockDown;
+	UInputAction* PlaceBlock;
 
 	/** Rotate block Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))

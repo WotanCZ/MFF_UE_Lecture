@@ -42,12 +42,13 @@ void ATetrisPlayer::MoveBlockAction(const FInputActionValue& Value)
 	OnGameInputRequested.ExecuteIfBound(MoveDir < 0.f ? EInputActionTypes::MoveBlockLeft : EInputActionTypes::MoveBlockRight);
 }
 
-void ATetrisPlayer::MoveBlockDownAction(const FInputActionValue& Value)
+void ATetrisPlayer::PlaceBlockAction(const FInputActionValue& Value)
 {
 	// Value is True when the button is pressed, False otherwise
 	bool bIsButtonPressed = Value.Get<bool>();
 
-	OnGameInputRequested.ExecuteIfBound(bIsButtonPressed ? EInputActionTypes::MoveBlockDown : EInputActionTypes::Undefined);
+	// We need to call Undefined too since we want to stop pushing the block down until the key is released
+	OnGameInputRequested.ExecuteIfBound(bIsButtonPressed ? EInputActionTypes::PlaceBlock : EInputActionTypes::Undefined);
 }
 
 void ATetrisPlayer::RotateBlockAction(const FInputActionValue& Value)
@@ -64,7 +65,7 @@ void ATetrisPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	// Make checks that the input actions are set up
 	// check = assert: stops exectution
 	check(MoveBlock);
-	check(MoveBlockDown);
+	check(PlaceBlock);
 	check(RotateBlock);
 
 	// Set up action bindings
@@ -74,8 +75,8 @@ void ATetrisPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		EnhancedInputComponent->BindAction(MoveBlock, ETriggerEvent::Triggered, this, &ATetrisPlayer::MoveBlockAction);
 
 		// Place block action - detect press and hold
-		EnhancedInputComponent->BindAction(MoveBlockDown, ETriggerEvent::Triggered, this, &ATetrisPlayer::MoveBlockDownAction);
-		EnhancedInputComponent->BindAction(MoveBlockDown, ETriggerEvent::Completed, this, &ATetrisPlayer::MoveBlockDownAction);
+		EnhancedInputComponent->BindAction(PlaceBlock, ETriggerEvent::Triggered, this, &ATetrisPlayer::PlaceBlockAction);
+		EnhancedInputComponent->BindAction(PlaceBlock, ETriggerEvent::Completed, this, &ATetrisPlayer::PlaceBlockAction);
 
 		// Rotate block action
 		EnhancedInputComponent->BindAction(RotateBlock, ETriggerEvent::Triggered, this, &ATetrisPlayer::RotateBlockAction);

@@ -31,9 +31,8 @@ void ATetrisBlock::BeginPlay()
 	{
 		MyDynamicMaterial = UMaterialInstanceDynamic::Create(MaterialInstance, this);
 		MeshComponent->SetMaterial(0, MyDynamicMaterial);
-		MyDynamicMaterial->SetVectorParameterValue(ColorParameterName, CurrentColor);
+		SetBlockColor(FColor::White);
 	}
-	this->SetActorHiddenInGame(true);
 }
 
 const FColor& ATetrisBlock::GetBlockColor() const
