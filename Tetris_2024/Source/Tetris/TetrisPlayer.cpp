@@ -43,17 +43,33 @@ void ATetrisPlayer::BeginPlay()
 
 void ATetrisPlayer::MoveBlockAction(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("MoveBlock %f"), Value.Get<float>());
+	//UE_LOG(LogTemp, Warning, TEXT("MoveBlock %f"), Value.Get<float>());
+	float MoveDir = Value.Get<float>();
+
+	OnGameInputRequested.ExecuteIfBound(
+		MoveDir < 0.f ?
+		EInputActionTypes::MoveBlockLeft :
+		EInputActionTypes::MoveBlockRight
+	);
 }
 
 void ATetrisPlayer::PlaceBlockAction(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Place %d"), Value.Get<bool>());
+	//UE_LOG(LogTemp, Warning, TEXT("Place %d"), Value.Get<bool>());
+
+	bool bPlaceBlock = Value.Get<bool>();
+
+	OnGameInputRequested.ExecuteIfBound(
+		bPlaceBlock ?
+		EInputActionTypes::PlaceBlock :
+		EInputActionTypes::Undefined
+	);
 }
 
 void ATetrisPlayer::RotateBlockAction(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Rotate %d"), Value.Get<bool>());
+	//UE_LOG(LogTemp, Warning, TEXT("Rotate %d"), Value.Get<bool>());
+	OnGameInputRequested.ExecuteIfBound(EInputActionTypes::RotateBlock);
 }
 
 // Called every frame

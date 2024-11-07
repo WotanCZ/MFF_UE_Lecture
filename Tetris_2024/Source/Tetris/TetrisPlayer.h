@@ -4,11 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "InputActionTypes.h"
 #include "TetrisPlayer.generated.h"
 
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+
+DECLARE_DELEGATE_OneParam(FOnGameInputRequested, EInputActionTypes);
 
 UCLASS()
 class TETRIS_API ATetrisPlayer : public APawn
@@ -33,6 +36,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+public:
+	FOnGameInputRequested OnGameInputRequested;
 
 private:
 
