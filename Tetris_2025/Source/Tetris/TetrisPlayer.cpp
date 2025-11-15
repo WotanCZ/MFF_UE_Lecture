@@ -15,6 +15,17 @@ ATetrisPlayer::ATetrisPlayer()
 void ATetrisPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	check(TetrisMappingContext);
+
+	if (APlayerController* PC = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
+			ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(TetrisMappingContext, 0);
+		}
+	}
 	
 }
 
@@ -30,5 +41,16 @@ void ATetrisPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	check(RotateBlock);
+
+	if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EIC->BindAction(RotateBlock, ETriggerEvent::Triggered, this, &ATetrisPlayer::RotateBlockAction);
+	}
+}
+
+void ATetrisPlayer::RotateBlockAction(const FInputActionValue& Value)
+{
+	OnGameInputRequested.ExecuteIfBound(EInputActionType::RotateBlock);
 }
 

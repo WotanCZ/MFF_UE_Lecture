@@ -3,6 +3,9 @@
 
 #include "TetrisGameMode.h"
 
+#include "TetrisPlayer.h"
+#include "Kismet/GameplayStatics.h"
+
 void ATetrisGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -28,4 +31,27 @@ void ATetrisGameMode::BeginPlay()
 			Board.Emplace(SpawnedBlock);
 		}
 	}
+
+	if (UWorld* World = GetWorld())
+	{
+		if (ATetrisPlayer* Player = Cast<ATetrisPlayer>(UGameplayStatics::GetPlayerPawn(World, 0)))
+		{
+			Player->OnGameInputRequested.BindUObject(this, &ATetrisGameMode::ProcessPlayerInput);
+		}
+
+		const float TickRate = 1.f / 20;
+		World->GetTimerManager().SetTimer(GameTickTimerHandle, this, &ATetrisGameMode::TetrisGameTick,
+			TickRate, true
+		);
+	}
+}
+
+void ATetrisGameMode::ProcessPlayerInput(EInputActionType Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("ROTATE"));
+}
+
+void ATetrisGameMode::TetrisGameTick()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Tick"));
 }

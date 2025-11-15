@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 
 #include "TetrisBlock.h"
+#include "InputActionTypes.h"
 
 #include "TetrisGameMode.generated.h"
 
@@ -20,11 +21,19 @@ class TETRIS_API ATetrisGameMode : public AGameModeBase
 protected:
 	virtual void BeginPlay() override;
 
+private:
+	void ProcessPlayerInput(EInputActionType Value);
+
+	void TetrisGameTick();
+
 public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ATetrisBlock> BlockClassToSpawn;
 
 	UPROPERTY()
 	TArray<ATetrisBlock*> Board;
+
+	UPROPERTY()
+	FTimerHandle GameTickTimerHandle;
 	
 };

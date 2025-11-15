@@ -8,8 +8,11 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "InputActionTypes.h"
 
 #include "TetrisPlayer.generated.h"
+
+DECLARE_DELEGATE_OneParam(FOnGameInputRequested, EInputActionType);
 
 UCLASS()
 class TETRIS_API ATetrisPlayer : public APawn
@@ -31,10 +34,15 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+	void RotateBlockAction(const FInputActionValue& Value);
+
 public:
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputMappingContext* TetrisMappingContext;
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* RotateBlock;
+
+	FOnGameInputRequested OnGameInputRequested;
 };
