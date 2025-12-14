@@ -1,12 +1,12 @@
 #pragma once
 
-#include "ViewWidget.h"
+#include "CommonActivatableWidget.h"
 #include "ItemIndicatorView.generated.h"
 
 class AProjectShooterBlankCharacter;
 
 UCLASS(Blueprintable)
-class USERINTERFACE_API UItemIndicatorView : public UViewWidget
+class USERINTERFACE_API UItemIndicatorView : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
 
@@ -33,11 +33,9 @@ protected:
 	
 protected: // Default overrides
 
-	virtual void InitializeView() override;
+	virtual void NativeOnActivated() override;
 
-	virtual void DeinitializeView() override;
-	
-	virtual void Created() override;
+	virtual void NativeOnDeactivated() override;
 	
 private: // Delegate Handles
 

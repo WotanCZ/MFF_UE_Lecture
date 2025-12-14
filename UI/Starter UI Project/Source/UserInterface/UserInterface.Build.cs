@@ -12,7 +12,8 @@ public class UserInterface : ModuleRules
 			"InputCore",
 			"UMG",
 			"ProjectShooterBlank",
-			"EnhancedInput"
+			"EnhancedInput", 
+			"CommonUI"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]

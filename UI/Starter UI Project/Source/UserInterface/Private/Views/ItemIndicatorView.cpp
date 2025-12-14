@@ -1,5 +1,4 @@
 #include "ItemIndicatorView.h"
-#include "ViewHUD.h"
 #include "GameFramework/PlayerController.h"
 #include "ProjectShooterBlankCharacter.h"
 #include "ProjectShooterBlankPlayerController.h"
@@ -34,9 +33,9 @@ AProjectShooterBlankCharacter* UItemIndicatorView::GetPlayerCharacter()
 	return nullptr;
 }
 
-void UItemIndicatorView::InitializeView()
+void UItemIndicatorView::NativeOnActivated()
 {
-	Super::InitializeView();
+	Super::NativeOnActivated();
 
 	/*
 	AProjectShooterBlankCharacter* playerCharacter = GetPlayerCharacter();
@@ -49,9 +48,9 @@ void UItemIndicatorView::InitializeView()
 	*/
 }
 
-void UItemIndicatorView::DeinitializeView()
+void UItemIndicatorView::NativeOnDeactivated()
 {
-	Super::DeinitializeView();
+	Super::NativeOnDeactivated();
 
 	/*
 	AProjectShooterBlankCharacter* playerCharacter = GetPlayerCharacter();
@@ -64,8 +63,3 @@ void UItemIndicatorView::DeinitializeView()
 	*/
 }
 
-void UItemIndicatorView::Created()
-{
-	Super::Created();
-	//GetViewHUD()->ShowUI(ViewName);
-}
