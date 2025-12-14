@@ -12,6 +12,5 @@ public class ProjectShooterBlankEditorTarget : TargetRules
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_3;
 		
 		ExtraModuleNames.Add("ProjectShooterBlank");
-		ExtraModuleNames.Add("UserInterface");
 	}
 }

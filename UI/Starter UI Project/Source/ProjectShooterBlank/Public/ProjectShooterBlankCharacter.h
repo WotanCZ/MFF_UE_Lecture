@@ -52,11 +52,13 @@ protected:
 public:
 	
 	/** Delegate that will be called when player equips an item */
-	DECLARE_MULTICAST_DELEGATE(FOnItemPickedUp);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnItemPickedUp);
+	UPROPERTY(BlueprintAssignable)
 	FOnItemPickedUp OnItemPickedUp;
 	
 	/** Delegate that will be called when player fires a rifle */
-	DECLARE_MULTICAST_DELEGATE(FOnRifleFired);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRifleFired);
+	UPROPERTY(BlueprintAssignable)
 	FOnRifleFired OnRifleFired;
 		
 	/** Look Input Action */
