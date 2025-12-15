@@ -6,8 +6,7 @@
 
 class UMenuWidget;
 class ULayoutWidget;
-class AProjectShooterBlankPlayerController;
-class UInputMappingContext;
+class APlayerController;
 
 UCLASS(Blueprintable, NotBlueprintType)
 class UIMANAGER_API AGameHUD : public AHUD
