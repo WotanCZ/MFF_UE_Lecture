@@ -105,6 +105,7 @@ void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (!IsValid(Character))
 	{
+		Super::EndPlay(EndPlayReason);
 		return;
 	}
 	APlayerController* playerController = Cast<APlayerController>(Character->GetController());
@@ -115,4 +116,5 @@ void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 			Subsystem->RemoveMappingContext(FireMappingContext);
 		}
 	}
+	Super::EndPlay(EndPlayReason);
 }
