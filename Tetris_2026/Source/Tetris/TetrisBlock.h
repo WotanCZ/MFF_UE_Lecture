@@ -23,6 +23,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SetBlockColor(FColor InColor);
+	FColor GetBlockColor() const;
+
 public:
 	UPROPERTY()
 	UStaticMeshComponent* MeshComponent;

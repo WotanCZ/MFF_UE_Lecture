@@ -14,6 +14,7 @@ ATetrisBlock::ATetrisBlock()
 
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube"));
 	MeshComponent->SetStaticMesh(CubeMesh);
+	MeshComponent->SetWorldScale3D(FVector(0.9f));
 
 }
 
@@ -21,6 +22,18 @@ ATetrisBlock::ATetrisBlock()
 void ATetrisBlock::BeginPlay()
 {
 	Super::BeginPlay();
+
+	check(BlockMaterialInstance);
+
+	BlockMaterialInstanceDynamic = UMaterialInstanceDynamic::Create(
+		BlockMaterialInstance, this);
+	MeshComponent->SetMaterial(0, BlockMaterialInstanceDynamic);
+
+	uint8 R = static_cast<uint8>(FMath::SRand() * 255);
+	uint8 G = static_cast<uint8>(FMath::SRand() * 255);
+	uint8 B = static_cast<uint8>(FMath::SRand() * 255);
+
+	SetBlockColor(FColor(R,G,B));
 	
 }
 
@@ -29,5 +42,25 @@ void ATetrisBlock::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ATetrisBlock::SetBlockColor(FColor InColor)
+{
+	BlockColor = InColor;
+
+	if (BlockColor == FColor::Black)
+	{
+		SetActorHiddenInGame(true);
+	}
+	else
+	{
+		SetActorHiddenInGame(false);
+		BlockMaterialInstanceDynamic->SetVectorParameterValue(BlockParamaterName, BlockColor);
+	}	
+}
+
+FColor ATetrisBlock::GetBlockColor() const
+{
+	return BlockColor;
 }
 
